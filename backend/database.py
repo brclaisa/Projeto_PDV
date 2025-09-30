@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 import os
 
 # Configuração do banco de dados
-DATABASE_URL = "sqlite:///./panther_pdv.db"
+DATABASE_URL = "sqlite:///./projeto_pdv.db"
 
 engine = create_engine(
     DATABASE_URL, 

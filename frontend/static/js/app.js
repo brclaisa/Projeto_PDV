@@ -1,6 +1,6 @@
 // Projeto_PDV - JavaScript Principal
 
-class PantherPDV {
+class ProjetoPDV {
     constructor() {
         this.currentSection = 'dashboard';
         this.apiBase = '/api';
@@ -210,10 +210,10 @@ class PantherPDV {
                     </span>
                 </td>
                 <td>
-                    <button class="btn btn-sm btn-primary" onclick="pantherPDV.editProduct(${product.id})">
+                    <button class="btn btn-sm btn-primary" onclick="projetoPDV.editProduct(${product.id})">
                         Editar
                     </button>
-                    <button class="btn btn-sm btn-danger" onclick="pantherPDV.deleteProduct(${product.id})">
+                    <button class="btn btn-sm btn-danger" onclick="projetoPDV.deleteProduct(${product.id})">
                         Excluir
                     </button>
                 </td>
@@ -250,10 +250,10 @@ class PantherPDV {
                     </span>
                 </td>
                 <td>
-                    <button class="btn btn-sm btn-primary" onclick="pantherPDV.editCustomer(${customer.id})">
+                    <button class="btn btn-sm btn-primary" onclick="projetoPDV.editCustomer(${customer.id})">
                         Editar
                     </button>
-                    <button class="btn btn-sm btn-danger" onclick="pantherPDV.deleteCustomer(${customer.id})">
+                    <button class="btn btn-sm btn-danger" onclick="projetoPDV.deleteCustomer(${customer.id})">
                         Excluir
                     </button>
                 </td>
@@ -292,7 +292,7 @@ class PantherPDV {
                     </span>
                 </td>
                 <td>
-                    <button class="btn btn-sm btn-primary" onclick="pantherPDV.viewSaleReceipt(${sale.id})">
+                    <button class="btn btn-sm btn-primary" onclick="projetoPDV.viewSaleReceipt(${sale.id})">
                         Recibo
                     </button>
                 </td>
@@ -331,7 +331,7 @@ class PantherPDV {
                     }
                 </td>
                 <td>
-                    <button class="btn btn-sm btn-primary" onclick="pantherPDV.adjustInventory(${item.product_id})">
+                    <button class="btn btn-sm btn-primary" onclick="projetoPDV.adjustInventory(${item.product_id})">
                         Ajustar
                     </button>
                 </td>
@@ -459,8 +459,46 @@ class PantherPDV {
     }
 
     async handleSaleSubmit(event) {
-        // Implementar lógica de venda
-        this.showAlert('Funcionalidade de venda em desenvolvimento', 'info');
+        const formData = new FormData(event.target);
+        const saleData = Object.fromEntries(formData);
+        
+        // Validar dados obrigatórios
+        if (!saleData.payment_method) {
+            this.showAlert('Método de pagamento é obrigatório', 'warning');
+            return;
+        }
+        
+        // Por enquanto, criar uma venda simples sem itens
+        // TODO: Implementar seleção de produtos
+        const salePayload = {
+            customer_id: saleData.customer_id ? parseInt(saleData.customer_id) : null,
+            payment_method: saleData.payment_method,
+            discount_amount: parseFloat(saleData.discount_amount) || 0,
+            notes: saleData.notes || '',
+            items: [] // Lista vazia por enquanto
+        };
+        
+        try {
+            const response = await fetch(`${this.apiBase}/sales/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(salePayload)
+            });
+            
+            if (response.ok) {
+                this.showAlert('Venda criada com sucesso!', 'success');
+                this.closeModal(event.target.closest('.modal'));
+                this.loadSales();
+            } else {
+                const error = await response.json();
+                this.showAlert(`Erro: ${error.detail}`, 'danger');
+            }
+        } catch (error) {
+            console.error('Erro ao criar venda:', error);
+            this.showAlert('Erro ao criar venda', 'danger');
+        }
     }
 
     // Métodos auxiliares
@@ -715,5 +753,5 @@ class PantherPDV {
 
 // Inicializar aplicação quando o DOM estiver carregado
 document.addEventListener('DOMContentLoaded', () => {
-    window.pantherPDV = new PantherPDV();
+    window.projetoPDV = new ProjetoPDV();
 });

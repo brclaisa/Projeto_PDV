@@ -145,6 +145,7 @@ class InventoryUpdate(BaseModel):
 class Inventory(InventoryBase):
     id: int
     last_updated: datetime
+    product: Optional[Product] = None
 
     class Config:
         from_attributes = True

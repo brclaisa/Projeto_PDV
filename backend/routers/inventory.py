@@ -80,13 +80,15 @@ async def list_inventory(
     db: Session = Depends(get_db)
 ):
     """Listar inventário com filtros opcionais"""
-    query = db.query(Inventory).join(Product)
+    from sqlalchemy.orm import joinedload
+    
+    query = db.query(Inventory).options(joinedload(Inventory.product))
     
     if low_stock:
         query = query.filter(Inventory.quantity <= Inventory.min_stock)
     
     if product_name:
-        query = query.filter(Product.name.contains(product_name))
+        query = query.join(Product).filter(Product.name.contains(product_name))
     
     inventory = query.offset(skip).limit(limit).all()
     return inventory
