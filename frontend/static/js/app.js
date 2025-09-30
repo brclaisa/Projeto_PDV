@@ -507,6 +507,11 @@ class ProjetoPDV {
         if (modal) {
             modal.style.display = 'block';
             document.body.style.overflow = 'hidden';
+            
+            // Carregar dados específicos do modal
+            if (modalId === 'saleModal') {
+                this.loadCustomersForSale();
+            }
         }
     }
 
@@ -574,6 +579,23 @@ class ProjetoPDV {
             }
         } catch (error) {
             console.error('Erro ao carregar métodos de pagamento:', error);
+        }
+    }
+
+    async loadCustomersForSale() {
+        try {
+            const response = await fetch(`${this.apiBase}/customers/`);
+            const customers = await response.json();
+
+            const select = document.getElementById('saleCustomer');
+            if (select) {
+                select.innerHTML = '<option value="">Selecionar cliente...</option>' + 
+                    customers.map(customer => 
+                        `<option value="${customer.id}">${customer.name}</option>`
+                    ).join('');
+            }
+        } catch (error) {
+            console.error('Erro ao carregar clientes para venda:', error);
         }
     }
 
