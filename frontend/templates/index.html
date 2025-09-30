@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projeto_PDV</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" href="/static/images/logo.svg" type="image/svg+xml">
+    <link rel="shortcut icon" href="/static/images/logo-32.png" sizes="32x32" type="image/png">
+    <link rel="apple-touch-icon" href="/static/images/logo-192.png" sizes="192x192">
+    <link rel="icon" href="/static/images/logo-512.png" sizes="512x512" type="image/png">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <img src="/static/images/logo.svg" alt="Projeto_PDV" class="logo-image">
+            </div>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="#" data-section="dashboard" class="active">Dashboard</a></li>
+                    <li><a href="#" data-section="products">Produtos</a></li>
+                    <li><a href="#" data-section="customers">Clientes</a></li>
+                    <li><a href="#" data-section="sales">Vendas</a></li>
+                    <li><a href="#" data-section="inventory">Estoque</a></li>
+                    <li><a href="#" data-section="reports">Relatórios</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Container de Alertas -->
+    <div id="alertContainer" class="container mt-2"></div>
+
+    <!-- Container Principal -->
+    <main class="container">
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Dashboard</h2>
+                    <button class="btn btn-primary" onclick="pantherPDV.loadDashboard()">
+                        Atualizar
+                    </button>
+                </div>
+
+                <!-- Estatísticas do Dia -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="sales-today">0</div>
+                        <div class="stat-label">Vendas Hoje</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="revenue-today">R$ 0,00</div>
+                        <div class="stat-label">Faturamento Hoje</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="low-stock">0</div>
+                        <div class="stat-label">Produtos com Estoque Baixo</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-products">0</div>
+                        <div class="stat-label">Total de Produtos</div>
+                    </div>
+                </div>
+
+                <!-- Resumo de Vendas do Dia -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h3 class="card-title">Vendas por Método de Pagamento - Hoje</h3>
+                    </div>
+                    <div id="todaySalesChart"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Produtos Section -->
+        <section id="products" class="section" style="display: none;">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Gestão de Produtos</h2>
+                    <button class="btn btn-primary" onclick="pantherPDV.showModal('productModal')">
+                        Novo Produto
+                    </button>
+                </div>
+
+                <div class="table-container">
+                    <table id="productsTable" class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Código de Barras</th>
+                                <th>Categoria</th>
+                                <th>Preço</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dados carregados via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Clientes Section -->
+        <section id="customers" class="section" style="display: none;">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Gestão de Clientes</h2>
+                    <button class="btn btn-primary" onclick="pantherPDV.showModal('customerModal')">
+                        Novo Cliente
+                    </button>
+                </div>
+
+                <div class="table-container">
+                    <table id="customersTable" class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th>Telefone</th>
+                                <th>Documento</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dados carregados via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Vendas Section -->
+        <section id="sales" class="section" style="display: none;">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Gestão de Vendas</h2>
+                    <button class="btn btn-primary" onclick="pantherPDV.showModal('saleModal')">
+                        Nova Venda
+                    </button>
+                </div>
+
+                <div class="table-container">
+                    <table id="salesTable" class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Data</th>
+                                <th>Cliente</th>
+                                <th>Total</th>
+                                <th>Desconto</th>
+                                <th>Valor Final</th>
+                                <th>Pagamento</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dados carregados via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Estoque Section -->
+        <section id="inventory" class="section" style="display: none;">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Controle de Estoque</h2>
+                    <button class="btn btn-primary" onclick="pantherPDV.showModal('inventoryModal')">
+                        Ajustar Estoque
+                    </button>
+                </div>
+
+                <div class="table-container">
+                    <table id="inventoryTable" class="table">
+                        <thead>
+                            <tr>
+                                <th>ID Produto</th>
+                                <th>Nome</th>
+                                <th>Quantidade</th>
+                                <th>Estoque Mínimo</th>
+                                <th>Estoque Máximo</th>
+                                <th>Localização</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dados carregados via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Relatórios Section -->
+        <section id="reports" class="section" style="display: none;">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Relatórios e Análises</h2>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-primary" onclick="pantherPDV.exportSalesReport()">
+                            Exportar Vendas
+                        </button>
+                        <button class="btn btn-secondary" onclick="pantherPDV.generateInventoryReport()">
+                            Relatório de Estoque
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Resumo de Vendas -->
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h3 class="card-title">Resumo de Vendas</h3>
+                    </div>
+                    <div id="salesSummary">
+                        <!-- Dados carregados via JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Produtos Mais Vendidos -->
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h3 class="card-title">Produtos Mais Vendidos</h3>
+                    </div>
+                    <div id="topProducts">
+                        <!-- Dados carregados via JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Produtos com Estoque Baixo -->
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h3 class="card-title">Produtos com Estoque Baixo</h3>
+                    </div>
+                    <div id="lowStockProducts">
+                        <!-- Dados carregados via JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal - Novo Produto -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Novo Produto</h3>
+                <span class="close">&times;</span>
+            </div>
+            <form id="productForm">
+                <div class="form-group">
+                    <label class="form-label" for="productName">Nome do Produto *</label>
+                    <input type="text" id="productName" name="name" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="productDescription">Descrição</label>
+                    <textarea id="productDescription" name="description" class="form-input" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="productPrice">Preço *</label>
+                    <input type="number" id="productPrice" name="price" class="form-input" step="0.01" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="productCostPrice">Preço de Custo</label>
+                    <input type="number" id="productCostPrice" name="cost_price" class="form-input" step="0.01" min="0">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="productBarcode">Código de Barras</label>
+                    <input type="text" id="productBarcode" name="barcode" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="productCategory">Categoria</label>
+                    <input type="text" id="productCategory" name="category" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="productBrand">Marca</label>
+                    <input type="text" id="productBrand" name="brand" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="productWeight">Peso (kg)</label>
+                    <input type="number" id="productWeight" name="weight" class="form-input" step="0.01" min="0">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="productDimensions">Dimensões</label>
+                    <input type="text" id="productDimensions" name="dimensions" class="form-input" placeholder="L x A x P">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">
+                        <input type="checkbox" id="productActive" name="active" checked> Produto Ativo
+                    </label>
+                </div>
+                <div class="form-group text-right">
+                    <button type="button" class="btn btn-secondary" onclick="pantherPDV.closeModal(document.getElementById('productModal'))">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        Salvar Produto
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal - Novo Cliente -->
+    <div id="customerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Novo Cliente</h3>
+                <span class="close">&times;</span>
+            </div>
+            <form id="customerForm">
+                <div class="form-group">
+                    <label class="form-label" for="customerName">Nome Completo *</label>
+                    <input type="text" id="customerName" name="name" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="customerEmail">Email</label>
+                    <input type="email" id="customerEmail" name="email" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="customerPhone">Telefone</label>
+                    <input type="tel" id="customerPhone" name="phone" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="customerDocument">CPF/CNPJ</label>
+                    <input type="text" id="customerDocument" name="document" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="customerBirthDate">Data de Nascimento</label>
+                    <input type="date" id="customerBirthDate" name="birth_date" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="customerGender">Gênero</label>
+                    <select id="customerGender" name="gender" class="form-select">
+                        <option value="">Selecione...</option>
+                        <option value="M">Masculino</option>
+                        <option value="F">Feminino</option>
+                        <option value="O">Outro</option>
+                    </select>
+                </div>
+                <h4>Endereço</h4>
+                <div class="form-group">
+                    <label class="form-label" for="customerStreet">Rua</label>
+                    <input type="text" id="customerStreet" name="address_street" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="customerNumber">Número</label>
+                    <input type="text" id="customerNumber" name="address_number" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="customerComplement">Complemento</label>
+                    <input type="text" id="customerComplement" name="address_complement" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="customerNeighborhood">Bairro</label>
+                    <input type="text" id="customerNeighborhood" name="address_neighborhood" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="customerCity">Cidade</label>
+                    <input type="text" id="customerCity" name="address_city" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="customerState">Estado</label>
+                    <input type="text" id="customerState" name="address_state" class="form-input" maxlength="2">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="customerZipcode">CEP</label>
+                    <input type="text" id="customerZipcode" name="address_zipcode" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="customerNotes">Observações</label>
+                    <textarea id="customerNotes" name="notes" class="form-input" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">
+                        <input type="checkbox" id="customerActive" name="active" checked> Cliente Ativo
+                    </label>
+                </div>
+                <div class="form-group text-right">
+                    <button type="button" class="btn btn-secondary" onclick="pantherPDV.closeModal(document.getElementById('customerModal'))">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        Salvar Cliente
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal - Nova Venda -->
+    <div id="saleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Nova Venda</h3>
+                <span class="close">&times;</span>
+            </div>
+            <form id="saleForm">
+                <div class="form-group">
+                    <label class="form-label" for="saleCustomer">Cliente</label>
+                    <select id="saleCustomer" name="customer_id" class="form-select">
+                        <option value="">Selecionar cliente...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="salePaymentMethod">Método de Pagamento *</label>
+                    <select id="salePaymentMethod" name="payment_method" class="form-select" required>
+                        <option value="">Selecionar método...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="saleDiscount">Desconto (R$)</label>
+                    <input type="number" id="saleDiscount" name="discount_amount" class="form-input" step="0.01" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="saleNotes">Observações</label>
+                    <textarea id="saleNotes" name="notes" class="form-input" rows="3"></textarea>
+                </div>
+                <div class="form-group text-right">
+                    <button type="button" class="btn btn-secondary" onclick="pantherPDV.closeModal(document.getElementById('saleModal'))">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        Finalizar Venda
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal - Recibo -->
+    <div id="receiptModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Recibo de Venda</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div id="receiptContent">
+                <!-- Conteúdo do recibo carregado via JavaScript -->
+            </div>
+            <div class="form-group text-right mt-3">
+                <button type="button" class="btn btn-primary" onclick="window.print()">
+                    Imprimir
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="pantherPDV.closeModal(document.getElementById('receiptModal'))">
+                    Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

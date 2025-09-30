@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="256" height="256" aria-label="Projeto_PDV">
+  <!-- Carrinho de compras -->
+  <g fill="none" stroke="#00df81" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Alça do carrinho -->
+    <path d="M10 16h8l6 28h24l6-20H18"/>
+    <!-- Corpo/base do carrinho -->
+    <path d="M16 24h38"/>
+    <!-- Rodas -->
+    <circle cx="26" cy="52" r="4" fill="#00df81"/>
+    <circle cx="46" cy="52" r="4" fill="#00df81"/>
+  </g>
+</svg>
+
